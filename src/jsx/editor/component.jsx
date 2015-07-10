@@ -1,9 +1,9 @@
-import React from 'react'
-
-var Component=React.createClass({
+let Component=React.createClass({
   render:function(){
     return <div>
       Component
     </div>
   }
 })
+
+export var component=Component

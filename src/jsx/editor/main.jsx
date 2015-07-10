@@ -1,10 +1,8 @@
-import React from 'react'
-import './component.jsx'
-import './element.jsx'
-import './preview.jsx'
+import {component as Component} from './component.jsx'
+import {element as Element} from './element.jsx'
+import {preview as Preview} from './preview.jsx'
 
-React.render(
-  <div>
+React.render(<div>
     <Component />
     <Element />
     <Preview />
