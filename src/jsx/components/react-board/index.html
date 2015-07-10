@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React Board</title>
+  <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+  <style>
+  textarea {
+    width: 400px;
+    height: 300px;
+  }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <textarea id="component">
+import World from 'modules/World.jsx'
+class Hello extends React.Component {
+  render() {
+    return <h1>Hello <World>{this.props.children}</World></h1>
+  }
+}
+  </textarea>
+  <textarea id="element"><Hello>Ma Jinhua</Hello></textarea>
+  <button id="render">Render</bSutton>
+  <script src="node_modules/react/dist/react-with-addons.js"></script>
+  <script src="node_modules/babel-core/browser.js"></script>
+  <script src="node_modules/babel-core/browser-polyfill.js"></script>
+  <script src="node_modules/systemjs/dist/system.src.js"></script>
+  <script>
+void function () {
+  var $ = function (id) { return document.getElementById(id) }
+  var moduleId = '__preview__'
+  var snippets = [
+    ';React.render(',
+    ',document.getElementById("container"));'
+  ]
+
+  $('render').addEventListener('click', function () {
+    window.render($('component').value, $('element').value)
+  }, false)
+
+  System.config({
+    transpiler: 'babel'
+  })
+
+  window.render = function (component, element) {
+    var code = [ component, snippets[0],
+      element, snippets[1] ].join('')
+    // console.log(babel.transform(code).code)
+    System.delete(System.normalizeSync(moduleId))
+    babel.run(code, {
+      modules: 'system',
+      moduleId: moduleId
+    })
+    System.import(moduleId)
+  }
+} ()
+  </script>
+</body>
+</html>
