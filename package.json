@@ -35,7 +35,7 @@
     "gulp-webpack": "^1.5.0",
     "node-libs-browser": "^0.5.2",
     "webpack": "^1.10.1",
-    "systemjs": "^0.18.4",
+    "systemjs": "^0.18.4"
   },
   "dependencies": {
     "brace": "^0.5.1",
