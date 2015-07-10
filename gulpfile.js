@@ -81,7 +81,7 @@ for(var i in pages){
         .pipe(uglify())
         .pipe(rename(pageName+'.min.js'))
         .pipe(gulp.dest(paths.build.js))
-      gulp.watch([paths.dev.jsx+'/'+pageName+'/main.jsx','src/jsx/components/','src/jsx/util'],[jsxTaskName])
+      gulp.watch([paths.dev.jsx+'/'+pageName+'/**','src/jsx/components/**','src/jsx/util/**'],[jsxTaskName])
     })
     //推送至任务列表
     jadeTasks.push(jadeTaskName)
