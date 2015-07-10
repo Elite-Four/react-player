@@ -3,7 +3,7 @@ var
   gulp=require('gulp'),
   util=require('gulp-util'),
   plumber=require('gulp-plumber'),
-  webpack=require('gulp-webpack'),
+  webpack=require('webpack-stream'),
   rename=require('gulp-rename'),
   browserSync=require('browser-sync'),
   jade=require('gulp-jade'),
