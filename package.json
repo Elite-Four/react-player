@@ -1,0 +1,24 @@
+{
+  "name": "react-player",
+  "version": "0.0.1",
+  "description": "React Editor and Previewer",
+  "main": "node_modules/.bin/gulp",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elite-Four/react-player.git"
+  },
+  "keywords": [
+    "react",
+    "editor",
+    "previewer"
+  ],
+  "author": "George Chung <Gerhut@GMail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/Elite-Four/react-player/issues"
+  },
+  "homepage": "https://github.com/Elite-Four/react-player#readme"
+}
