@@ -1,50 +1,24 @@
 export default class Editor extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      loading: !!props.src,
-      value: ''
-    }
-  }
   componentDidMount() {
-    if (this.props.src) {
-      this.load(this.props.src)
-    }
     this.editor = ace.edit(this.refs.editor.getDOMNode())
+
     this.editor.setFontSize(20)
     this.editor.setTheme('ace/theme/monokai')
-    this.editor.getSession().on('change', this.handleChange.bind(this))
+    this.editor.on('change', this.handleChange.bind(this))
+
+    this.editor.setReadOnly(!this.props.enabled)
+    this.editor.setValue(this.props.initialValue, 0)
   }
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.src !== this.props.src) {
-      this.load(nextProps.src)
-    }
-  }
-  componentDidUpdate(prevProps, prevState) {
-    this.editor.setReadOnly(this.state.loading)
-    if (prevState.loading)
-      this.editor.setValue(this.state.value, 0)
+  componentDidUpdate(prevProps) {
+    this.editor.setReadOnly(!this.props.enabled)
+    if (prevProps.initialValue != this.props.initialValue)
+      this.editor.setValue(this.props.initialValue, 0)
   }
   componentWillUnmount() {
     this.editor.destroy()
   }
-  load(src) {
-    this.setState({ loading: true })
-    superagent
-      .get(this.props.src)
-      .accept(this.props.type)
-      .end((err, res) => {
-        this.setState({
-          loading: false,
-          value: res.text
-        })
-      })
-  }
   handleChange() {
-    var value = this.editor.getValue()
-    this.setState({ value })
-    this.props.onChange(value)
+    this.props.onChange(this.editor.getValue())
   }
   render() {
     return <div style={this.props.style}>
@@ -53,7 +27,7 @@ export default class Editor extends React.Component {
           width: "100%",
           height: "100%"
         }}/>
-      <button disabled={this.state.loading}
+      <button disabled={!this.props.enabled}
         onClick={this.props.onAction}
         style={{
           position: "absolute",
@@ -65,14 +39,16 @@ export default class Editor extends React.Component {
 }
 
 Editor.propTypes = {
-  src: React.PropTypes.string,
-  type: React.PropTypes.string,
+  initialValue: React.PropTypes.string,
+  enabled: React.PropTypes.bool,
   actionText: React.PropTypes.string.isRequired,
   onChange: React.PropTypes.func,
   onAction: React.PropTypes.func
 }
 
 Editor.defaultProps = {
+  initialValue: '',
+  enabled: true,
   onChange: ()=>{},
   onAction: ()=>{}
 }

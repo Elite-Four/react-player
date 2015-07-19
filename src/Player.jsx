@@ -1,39 +1,75 @@
 import Editor from './Editor.jsx'
-import Previewer from './Previewer.jsx'
+import Renderer from './Renderer.jsx'
+
+const TYPE = 'text/jsx'
+const RENDERER_SRC = 'renderer.html'
 
 export default class Player extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      previewer: {}
+      component: {
+        busy: false,
+        initial: '',
+        value: '',
+        renderer: ''
+      },
+      preview: {
+        busy: false,
+        initial: '',
+        value: '',
+        renderer: ''
+      }
+    }
+  }
+  componentDidMount() {
+    for (let type of ['component', 'preview']) {
+      let state = this.state[type]
+      state.busy = true
+      this.setState({ [type]: state })
+      superagent.get(this.props[`${type}Source`])
+        .set('Accept', TYPE)
+        .end((err, res) => {
+          let state = this.state[type]
+          state.busy = false
+          state.initial = res.text
+          state.renderer = res.text
+          this.setState({ [type]: state })
+        })
     }
   }
   handleChange(type, value) {
-    this.setState({
-      [type]: value
-    })
+    let state = this.state[type]
+    state.value = value
+    this.setState({ [type]: state })
   }
   handleSave() {
-    ;['component', 'preview'].forEach(type =>
+    for (let type of ['component', 'preview']) {
+      let state = this.state[type]
+      state.busy = true
+      this.setState({ [type]: state })
       superagent.post(this.props[type])
-        .type('text/jsx')
-        .send(this.state[type])
-        .end())
+        .type(TYPE)
+        .send(this.state[type].value)
+        .end((err, res) =>{
+          let state = this.state[type]
+          state.busy = false
+          this.setState({ [type]: state })
+        })
+    }
   }
   handlePreview() {
-    this.setState({
-      previewer: {
-        component: this.state.component,
-        preview: this.state.preview
-      }
-    })
+    for (let type of ['component', 'preview']) {
+      let state = this.state[type]
+      state.renderer = state.value
+      this.setState({ [type]: state })
+    }
   }
   render() {
     return <div>
-      <Editor src={this.props.component}
-        type="text/jsx"
-        actionText="Save"
+      <Editor actionText="Save" enabled={!this.state.component.busy}
+        initialValue={this.state.component.initial}
         onChange={this.handleChange.bind(this, 'component')}
         onAction={this.handleSave.bind(this)}
         style={{
@@ -41,9 +77,8 @@ export default class Player extends React.Component {
           top: 0, left: 0,
           width: "40%", height: "60%"
         }}/>
-      <Editor src={this.props.preview}
-        type="text/jsx"
-        actionText="Preview"
+      <Editor actionText="Preview" enabled={!this.state.preview.busy}
+        initialValue={this.state.preview.initial}
         onChange={this.handleChange.bind(this, 'preview')}
         onAction={this.handlePreview.bind(this)}
         style={{
@@ -51,9 +86,9 @@ export default class Player extends React.Component {
           bottom: 0, left: 0,
           width: "40%", height: "40%"
         }}/>
-      <Previewer src={this.props.previewer}
-        component={this.state.previewer.component}
-        preview={this.state.previewer.preview}
+      <Renderer src={RENDERER_SRC}
+        component={this.state.component.renderer}
+        preview={this.state.preview.renderer}
         style={{
           position: "absolute",
           top: 0, right: 0,
@@ -64,7 +99,6 @@ export default class Player extends React.Component {
 }
 
 Player.propTypes = {
-  component: React.PropTypes.string.isRequired,
-  preview: React.PropTypes.string.isRequired,
-  previewer: React.PropTypes.string.isRequired
+  componentSource: React.PropTypes.string.isRequired,
+  previewSource: React.PropTypes.string.isRequired
 }
