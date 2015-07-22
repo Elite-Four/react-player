@@ -34,6 +34,7 @@ export default class Player extends React.Component {
           let state = this.state[type]
           state.busy = false
           state.initial = res.text
+          state.value = res.text
           state.renderer = res.text
           this.setState({ [type]: state })
         })
@@ -52,7 +53,7 @@ export default class Player extends React.Component {
       superagent.post(this.props[type])
         .type(TYPE)
         .send(this.state[type].value)
-        .end((err, res) =>{
+        .end((err, res) => {
           let state = this.state[type]
           state.busy = false
           this.setState({ [type]: state })
@@ -75,7 +76,7 @@ export default class Player extends React.Component {
         style={{
           position: "absolute",
           top: 0, left: 0,
-          width: "40%", height: "60%"
+          width: "80%", height: "60%"
         }}/>
       <Editor actionText="Preview" enabled={!this.state.preview.busy}
         initialValue={this.state.preview.initial}
@@ -84,7 +85,7 @@ export default class Player extends React.Component {
         style={{
           position: "absolute",
           bottom: 0, left: 0,
-          width: "40%", height: "40%"
+          width: "80%", height: "40%"
         }}/>
       <Renderer src={RENDERER_SRC}
         component={this.state.component.renderer}
@@ -92,7 +93,7 @@ export default class Player extends React.Component {
         style={{
           position: "absolute",
           top: 0, right: 0,
-          width: "60%", height: "100%"
+          width: "20%", height: "100%"
         }}/>
     </div>
   }

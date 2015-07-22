@@ -1,18 +1,17 @@
 export default class Editor extends React.Component {
   componentDidMount() {
     this.editor = ace.edit(this.refs.editor.getDOMNode())
+    this.editor.$blockScrolling = Infinity
 
     this.editor.setFontSize(20)
     this.editor.setTheme('ace/theme/monokai')
-    this.editor.on('change', this.handleChange.bind(this))
-
-    this.editor.setReadOnly(!this.props.enabled)
-    this.editor.setValue(this.props.initialValue, 0)
   }
   componentDidUpdate(prevProps) {
     this.editor.setReadOnly(!this.props.enabled)
-    if (prevProps.initialValue != this.props.initialValue)
-      this.editor.setValue(this.props.initialValue, 0)
+    if (prevProps.initialValue != this.props.initialValue) {
+      this.editor.setSession(new ace.EditSession(this.props.initialValue))
+      this.editor.on('change', this.handleChange.bind(this))
+    }
   }
   componentWillUnmount() {
     this.editor.destroy()

@@ -2,7 +2,10 @@ export default class Renderer extends React.Component {
   componentDidMount() {
     this.renderFrame()
   }
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps == null
+      || this.props.component != prevProps.component
+      || this.props.preview != prevProps.preview)
     this.renderFrame()
   }
   renderFrame() {
@@ -17,7 +20,6 @@ export default class Renderer extends React.Component {
     if (frame.contentDocument.readyState != 'complete'
       || !('render' in frame.contentWindow)) {
       if (!this.bind) {
-        console.log(this.bind)
         frame.contentWindow.addEventListener('load', loadHandler, false)
         this.bind = true
       }
