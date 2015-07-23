@@ -19,13 +19,15 @@ export default class Player extends React.Component {
         busy: false,
         initial: '',
         value: '',
-        renderer: ''
+        renderer: '',
+        error: null
       },
       preview: {
         busy: false,
         initial: '',
         value: '',
-        renderer: ''
+        renderer: '',
+        error: null
       }
     }
   }
@@ -75,13 +77,20 @@ export default class Player extends React.Component {
     for (let type of ['component', 'preview']) {
       let state = this.state[type]
       state.renderer = state.value
+      state.error = null
       this.setState({ [type]: state })
     }
+  }
+  handleError(type, error) {
+    let state = this.state[type]
+    state.error = error
+    this.setState({ [type]: state })
   }
   render() {
     return <div>
       <Editor enabled={!this.state.component.busy}
         initialValue={this.state.component.initial}
+        error={this.state.component.error}
         onChange={this.handleChange.bind(this, 'component')}
         onAction={this.handleSave.bind(this)}
         style={{
@@ -91,6 +100,7 @@ export default class Player extends React.Component {
         }}><ContentSave/></Editor>
       <Editor enabled={!this.state.preview.busy}
         initialValue={this.state.preview.initial}
+        error={this.state.preview.error}
         onChange={this.handleChange.bind(this, 'preview')}
         onAction={this.handlePreview.bind(this)}
         style={{
@@ -101,6 +111,8 @@ export default class Player extends React.Component {
       <Renderer src={RENDERER_SRC}
         component={this.state.component.renderer}
         preview={this.state.preview.renderer}
+        onComponentError={this.handleError.bind(this, 'component')}
+        onPreviewError={this.handleError.bind(this, 'preview')}
         style={{
           position: "absolute",
           top: 0, right: 0,

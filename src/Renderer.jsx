@@ -17,7 +17,17 @@ export default class Renderer extends React.Component {
       this.bind = false
       render()
     }
-    let render = () => frame.contentWindow.render(this.props.component, this.props.preview)
+    let render = () => {
+      var syntaxError = frame.contentWindow.render(this.props.component, this.props.preview)
+      if (syntaxError == null) {
+        return
+      }
+      if (syntaxError.isPreview) {
+        this.props.onPreviewError(syntaxError)
+      } else {
+        this.props.onComponentError(syntaxError)
+      }
+    }
 
     if (frame.contentDocument.readyState != 'complete'
       || !('render' in frame.contentWindow)) {
@@ -45,10 +55,14 @@ export default class Renderer extends React.Component {
 Renderer.propTypes = {
   src: React.PropTypes.string.isRequired,
   component: React.PropTypes.string,
-  preview: React.PropTypes.string
+  preview: React.PropTypes.string,
+  onComponentError: React.PropTypes.func,
+  onPreviewError: React.PropTypes.func
 }
 
 Renderer.defaultProps = {
   component: '',
-  preview: ''
+  preview: '',
+  onComponentError: () => {},
+  onPreviewError: () => {}
 }

@@ -11,11 +11,27 @@ export default class Editor extends React.Component {
     this.editor.setTheme('ace/theme/monokai')
   }
   componentDidUpdate(prevProps) {
+    let session
     this.editor.setReadOnly(!this.props.enabled)
+
     if (prevProps.initialValue != this.props.initialValue) {
-      let session = new ace.EditSession(this.props.initialValue)
+      session = new ace.EditSession(this.props.initialValue)
       session.on('change', this.handleChange.bind(this))
       this.editor.setSession(session)
+    } else {
+      session = this.editor.getSession()
+    }
+    if (prevProps.error != this.props.error) {
+      let error = this.props.error
+      if (error != null) {
+        session.setAnnotations([{
+          row: error.line - 1,
+          text: error.message,
+          type: "error"
+        }])
+      } else {
+        session.clearAnnotations()
+      }
     }
   }
   componentWillUnmount() {
@@ -31,7 +47,6 @@ export default class Editor extends React.Component {
           width: "100%",
           height: "100%"
         }}/>
-      {this.props.children}
       <FloatingActionButton disabled={!this.props.enabled}
         onClick={this.props.onAction}
         style={{
@@ -46,6 +61,7 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   initialValue: React.PropTypes.string,
   enabled: React.PropTypes.bool,
+  error: React.PropTypes.object,
   onChange: React.PropTypes.func,
   onAction: React.PropTypes.func
 }
