@@ -1,5 +1,7 @@
 import React from 'react'
 
+import FloatingActionButton from 'material-ui/lib/floating-action-button'
+
 export default class Editor extends React.Component {
   componentDidMount() {
     this.editor = ace.edit(this.refs.editor.getDOMNode())
@@ -29,13 +31,14 @@ export default class Editor extends React.Component {
           width: "100%",
           height: "100%"
         }}/>
-      <button disabled={!this.props.enabled}
+      {this.props.children}
+      <FloatingActionButton disabled={!this.props.enabled}
         onClick={this.props.onAction}
         style={{
           position: "absolute",
           right: "10%",
           bottom: "10%"
-        }}>{this.props.actionText}</button>
+        }}>{this.props.children}</FloatingActionButton>
     </div>
   }
 }
@@ -43,7 +46,6 @@ export default class Editor extends React.Component {
 Editor.propTypes = {
   initialValue: React.PropTypes.string,
   enabled: React.PropTypes.bool,
-  actionText: React.PropTypes.string.isRequired,
   onChange: React.PropTypes.func,
   onAction: React.PropTypes.func
 }

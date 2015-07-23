@@ -1,5 +1,9 @@
 import React from 'react'
 
+import ThemeManager from 'material-ui/lib/styles/theme-manager'
+import ContentSave from 'material-ui/lib/svg-icons/content/save'
+import ActionPageview from 'material-ui/lib/svg-icons/action/pageview'
+
 import Editor from './Editor.jsx'
 import Renderer from './Renderer.jsx'
 
@@ -23,6 +27,11 @@ export default class Player extends React.Component {
         value: '',
         renderer: ''
       }
+    }
+  }
+  getChildContext() {
+    return {
+      muiTheme: new ThemeManager().getCurrentTheme()
     }
   }
   componentDidMount() {
@@ -71,7 +80,7 @@ export default class Player extends React.Component {
   }
   render() {
     return <div>
-      <Editor actionText="Save" enabled={!this.state.component.busy}
+      <Editor enabled={!this.state.component.busy}
         initialValue={this.state.component.initial}
         onChange={this.handleChange.bind(this, 'component')}
         onAction={this.handleSave.bind(this)}
@@ -79,8 +88,8 @@ export default class Player extends React.Component {
           position: "absolute",
           top: 0, left: 0,
           width: "80%", height: "60%"
-        }}/>
-      <Editor actionText="Preview" enabled={!this.state.preview.busy}
+        }}><ContentSave/></Editor>
+      <Editor enabled={!this.state.preview.busy}
         initialValue={this.state.preview.initial}
         onChange={this.handleChange.bind(this, 'preview')}
         onAction={this.handlePreview.bind(this)}
@@ -88,7 +97,7 @@ export default class Player extends React.Component {
           position: "absolute",
           bottom: 0, left: 0,
           width: "80%", height: "40%"
-        }}/>
+        }}><ActionPageview/></Editor>
       <Renderer src={RENDERER_SRC}
         component={this.state.component.renderer}
         preview={this.state.preview.renderer}
@@ -99,6 +108,10 @@ export default class Player extends React.Component {
         }}/>
     </div>
   }
+}
+
+Player.childContextTypes = {
+  muiTheme: React.PropTypes.object
 }
 
 Player.propTypes = {
