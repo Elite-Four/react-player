@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default class Renderer extends React.Component {
   componentDidMount() {
     this.renderFrame()

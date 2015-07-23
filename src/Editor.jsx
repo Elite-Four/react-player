@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default class Editor extends React.Component {
   componentDidMount() {
     this.editor = ace.edit(this.refs.editor.getDOMNode())
@@ -9,8 +11,9 @@ export default class Editor extends React.Component {
   componentDidUpdate(prevProps) {
     this.editor.setReadOnly(!this.props.enabled)
     if (prevProps.initialValue != this.props.initialValue) {
-      this.editor.setSession(new ace.EditSession(this.props.initialValue))
-      this.editor.on('change', this.handleChange.bind(this))
+      let session = new ace.EditSession(this.props.initialValue)
+      session.on('change', this.handleChange.bind(this))
+      this.editor.setSession(session)
     }
   }
   componentWillUnmount() {

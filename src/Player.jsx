@@ -1,3 +1,5 @@
+import React from 'react'
+
 import Editor from './Editor.jsx'
 import Renderer from './Renderer.jsx'
 
